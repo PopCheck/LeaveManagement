@@ -1,7 +1,10 @@
 ﻿using HR.LeaveManagement.Application.DTOs.LeaveType;
 using HR.LeaveManagement.Application.Features.LeaveTypes.Requests.Commands;
 using HR.LeaveManagement.Application.Features.LeaveTypes.Requests.Queries;
+using HR.LeaveManagement.Application.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -25,6 +28,7 @@ namespace HR.LeaveManagement.Api.Controllers
 
         // GET: api/<LeaveTypesController>
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<List<LeaveTypeDto>>> Get()
         {
             var leaveTypes = await _mediator.Send(new GetLeaveTypeListRequest());
@@ -45,7 +49,9 @@ namespace HR.LeaveManagement.Api.Controllers
 
         // POST api/<LeaveTypesController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] CreateLeaveTypeDto leaveType)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<BaseCommandResponse>> Post([FromBody] CreateLeaveTypeDto leaveType)
         {
             var command = new CreateLeaveTypeCommand
             {
@@ -57,7 +63,10 @@ namespace HR.LeaveManagement.Api.Controllers
         }
 
         // PUT api/<LeaveTypesController>
-        [HttpPut]
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> Put([FromBody] LeaveTypeDto leaveType)
         {
             var command = new UpdateLeaveTypeCommand
@@ -71,6 +80,9 @@ namespace HR.LeaveManagement.Api.Controllers
 
         // DELETE api/<LeaveTypesController>/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> Delete(int id)
         {
             var command = new DeleteLeaveTypeCommand
