@@ -1,3 +1,4 @@
+using HR.LeaveManagement.Api.Middleware;
 using HR.LeaveManagement.Application;
 using HR.LeaveManagement.Identity;
 using HR.LeaveManagement.Infrastructure;
@@ -25,6 +26,8 @@ namespace HR.LeaveManagement.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             AddSwaggerDoc(services);
 
             services.ConfigureApplicationServices();
@@ -92,6 +95,8 @@ namespace HR.LeaveManagement.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR.LeaveManagement.Api v1"));
             }
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
 

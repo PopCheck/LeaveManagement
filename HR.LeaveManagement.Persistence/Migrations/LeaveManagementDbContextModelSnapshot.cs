@@ -32,6 +32,9 @@ namespace HR.LeaveManagement.Persistence.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EmployeeId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -92,6 +95,9 @@ namespace HR.LeaveManagement.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RequestComments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestingEmployeeId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDate")

@@ -28,7 +28,7 @@ namespace HR.LeaveManagement.Identity
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IAuthService, AuthService>();
-
+            services.AddTransient<IUserService, UserService>();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

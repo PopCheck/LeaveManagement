@@ -1,20 +1,22 @@
 ﻿using HR.LeaveManagement.MVC.Contracts;
 using HR.LeaveManagement.MVC.Models;
-using HR.LeaveManagement.MVC.Services.Base;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
 namespace HR.LeaveManagement.MVC.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class LeaveTypesController : Controller
     {
         private readonly ILeaveTypeService _leaveTypeService;
+        private readonly ILeaveAllocationService _leaveAllocationService;
 
-        public LeaveTypesController(ILeaveTypeService leaveTypeService)
+        public LeaveTypesController(ILeaveTypeService leaveTypeService, ILeaveAllocationService leaveAllocationService)
         {
             _leaveTypeService = leaveTypeService;
+            _leaveAllocationService = leaveAllocationService;
         }
 
         // GET: LeaveTypesController
@@ -77,14 +79,14 @@ namespace HR.LeaveManagement.MVC.Controllers
             {
                 var response = await _leaveTypeService.UpdateLeaveType(id, leaveType);
 
-                if(response.Success)
+                if (response.Success)
                 {
                     return RedirectToAction(nameof(Index));
                 }
 
                 ModelState.AddModelError("", response.ValidationErrors);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
@@ -107,6 +109,27 @@ namespace HR.LeaveManagement.MVC.Controllers
                 }
 
                 ModelState.AddModelError("", response.ValidationErrors);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Allocate(int id)
+        {
+            try
+            {
+                var response = await _leaveAllocationService.CreateLeaveAllocations(id);
+
+                if(response.Success)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
             catch (Exception ex)
             {
